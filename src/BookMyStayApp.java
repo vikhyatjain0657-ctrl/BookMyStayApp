@@ -1,35 +1,33 @@
 /**
- * MAIN CLASS - UseCase1HotelBookingApp
+ * MAIN CLASS - UseCase3InventorySetup
  *
- * Use Case 1: Application Entry & Welcome Message
- *
- * This class represents the entry point of the
- * Hotel Booking Management System.
- *
- * At this stage, the application:
- * - Starts execution from the main() method
- * - Displays a welcome message to the user
- * - Confirms that the system has started successfully
- *
- * No business logic, data structures, or user input
- * is implemented in this use case.
- *
- * @author Developer
- * @version 1.0
+ * @version 3.1
  */
 public class BookMyStayApp {
 
-    /**
-     * Application entry point.
-     * This method is the first method executed
-     * when the program is launched by the JVM.
-     *
-     * @param args Command-line arguments
-     */
     public static void main(String[] args) {
 
-        System.out.println("Welcome to the Hotel Booking Management System");
-        System.out.println("System initialized successfully.");
+        RoomInventory inventory = new RoomInventory();
 
+        Room single = new SingleRoom();
+        Room doub = new DoubleRoom();
+        Room suite = new SuiteRoom();
+
+        System.out.println("Hotel Room Inventory Status\n");
+
+        System.out.println("Single Room:");
+        single.displayRoomDetails();
+        System.out.println("Available Rooms: "
+                + inventory.getRoomAvailability().get("Single") + "\n");
+
+        System.out.println("Double Room:");
+        doub.displayRoomDetails();
+        System.out.println("Available Rooms: "
+                + inventory.getRoomAvailability().get("Double") + "\n");
+
+        System.out.println("Suite Room:");
+        suite.displayRoomDetails();
+        System.out.println("Available Rooms: "
+                + inventory.getRoomAvailability().get("Suite"));
     }
 }
