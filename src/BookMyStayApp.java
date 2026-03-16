@@ -1,7 +1,7 @@
 /**
  * MAIN CLASS - UseCase2RoomInitialization
  *
- * Use Case 2: Basic Room Types & Static Availability
+ * Use Case 4: Room Search & Availability Check
  *
  * Description:
  * This class demonstrates room initialization
@@ -22,26 +22,29 @@ public class BookMyStayApp {
      */
     public static void main(String[] args) {
 
-        int singleAvailable = 5;
-        int doubleAvailable = 3;
-        int suiteAvailable = 2;
+        // centralized inventory (read-only usage)
+        RoomInventory inventory = new RoomInventory();
 
+        // room domain objects
         Room single = new SingleRoom();
-        Room doub = new DoubleRoom();
+        Room doub = new DoubleRoom();   // Use Case 4 spec expects 400 sqft & 2508.0
         Room suite = new SuiteRoom();
 
-        System.out.println("Hotel Room Initialization\n");
+        System.out.println("Room Search\n");
 
         System.out.println("Single Room:");
         single.displayRoomDetails();
-        System.out.println("Available: " + singleAvailable + "\n");
+        System.out.println("Available: "
+                + inventory.getRoomAvailability().get("Single") + "\n");
 
         System.out.println("Double Room:");
         doub.displayRoomDetails();
-        System.out.println("Available: " + doubleAvailable + "\n");
+        System.out.println("Available: "
+                + inventory.getRoomAvailability().get("Double") + "\n");
 
         System.out.println("Suite Room:");
         suite.displayRoomDetails();
-        System.out.println("Available: " + suiteAvailable);
+        System.out.println("Available: "
+                + inventory.getRoomAvailability().get("Suite"));
     }
 }
