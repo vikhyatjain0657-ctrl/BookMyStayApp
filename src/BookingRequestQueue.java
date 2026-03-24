@@ -1,13 +1,6 @@
 import java.util.LinkedList;
 import java.util.Queue;
 
-/**
- * CLASS - BookingRequestQueue
- *
- * Manages booking requests using FIFO queue.
- *
- * @version 5.0
- */
 public class BookingRequestQueue {
 
     private Queue<Reservation> queue;

@@ -1,10 +1,3 @@
-/**
- * CLASS - Reservation
- *
- * Represents a booking request made by a guest.
- *
- * @version 5.0
- */
 public class Reservation {
 
     private String guestName;
