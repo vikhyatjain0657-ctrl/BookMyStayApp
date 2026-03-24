@@ -22,26 +22,21 @@ public class BookMyStayApp {
      */
     public static void main(String[] args) {
 
-        int singleAvailable = 5;
-        int doubleAvailable = 3;
-        int suiteAvailable = 2;
+        System.out.println("Room Allocation Processing");
 
-        Room single = new SingleRoom();
-        Room doub = new DoubleRoom();
-        Room suite = new SuiteRoom();
+        RoomInventory inventory = new RoomInventory();
+        BookingRequestQueue queue = new BookingRequestQueue();
+        RoomAllocationService service = new RoomAllocationService();
 
-        System.out.println("Hotel Room Initialization\n");
+        // booking requests (FIFO)
+        queue.addRequest(new Reservation("Abhi", "Single"));
+        queue.addRequest(new Reservation("Subha", "Single"));
+        queue.addRequest(new Reservation("Vanmathi", "Suite"));
 
-        System.out.println("Single Room:");
-        single.displayRoomDetails();
-        System.out.println("Available: " + singleAvailable + "\n");
-
-        System.out.println("Double Room:");
-        doub.displayRoomDetails();
-        System.out.println("Available: " + doubleAvailable + "\n");
-
-        System.out.println("Suite Room:");
-        suite.displayRoomDetails();
-        System.out.println("Available: " + suiteAvailable);
+        // process queue
+        while (queue.hasPendingRequests()) {
+            Reservation r = queue.processRequest();
+            service.allocateRoom(r, inventory);
+        }
     }
 }
