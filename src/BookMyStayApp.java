@@ -1,34 +1,48 @@
+import java.util.Scanner;
+
 /**
- * MAIN CLASS - UseCase2RoomInitialization
+ * MAIN CLASS - UseCase9ErrorHandlingValidation
  *
- * Use Case 2: Basic Room Types & Static Availability
+ * Demonstrates validation + exception handling.
  *
- * Description:
- * This class demonstrates room initialization
- * using simple domain variables before introducing
- * centralized inventory management.
- *
- * Availability is represented using
- * basic variables to highlight limitations.
- *
- * @version 2.1
+ * @version 9.0
  */
 public class BookMyStayApp {
 
-    /**
-     * Application entry point.
-     *
-     * @param args Command-Line arguments
-     */
     public static void main(String[] args) {
 
-        BookingHistory history = new BookingHistory();
+        System.out.println("Booking Validation");
 
-        history.addReservation(new Reservation("Abhi", "Single"));
-        history.addReservation(new Reservation("Subha", "Double"));
-        history.addReservation(new Reservation("Vanmathi", "Suite"));
+        Scanner scanner = new Scanner(System.in);
 
-        BookingReportService reportService = new BookingReportService();
-        reportService.generateReport(history);
+        try {
+            // Input
+            System.out.print("Enter guest name: ");
+            String guestName = scanner.nextLine();
+
+            System.out.print("Enter room type (Single/Double/Suite): ");
+            String roomType = scanner.nextLine();
+
+            // Core components
+            RoomInventory inventory = new RoomInventory();
+            ReservationValidator validator = new ReservationValidator();
+            BookingRequestQueue queue = new BookingRequestQueue();
+
+            // Validation
+            validator.validate(guestName, roomType, inventory);
+
+            // If valid → add to queue
+            queue.addRequest(new Reservation(guestName, roomType));
+
+            System.out.println("Booking request added successfully.");
+
+        } catch (InvalidBookingException e) {
+
+            // Domain-specific error handling
+            System.out.println("Booking failed: " + e.getMessage());
+
+        } finally {
+            scanner.close();
+        }
     }
 }
