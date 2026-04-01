@@ -22,20 +22,13 @@ public class BookMyStayApp {
      */
     public static void main(String[] args) {
 
-        System.out.println("Add-On Service Selection");
+        BookingHistory history = new BookingHistory();
 
-        // Assume reservation already confirmed in Use Case 6
-        String reservationId = "Single-1";
+        history.addReservation(new Reservation("Abhi", "Single"));
+        history.addReservation(new Reservation("Subha", "Double"));
+        history.addReservation(new Reservation("Vanmathi", "Suite"));
 
-        AddOnServiceManager manager = new AddOnServiceManager();
-
-        // Add services (example combination to match output)
-        manager.addService(reservationId, new AddOnService("Breakfast", 500.0));
-        manager.addService(reservationId, new AddOnService("Spa", 1000.0));
-
-        // Output
-        System.out.println("Reservation ID: " + reservationId);
-        System.out.println("Total Add-On Cost: "
-                + manager.getTotalCost(reservationId));
+        BookingReportService reportService = new BookingReportService();
+        reportService.generateReport(history);
     }
 }
