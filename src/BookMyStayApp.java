@@ -22,26 +22,20 @@ public class BookMyStayApp {
      */
     public static void main(String[] args) {
 
-        int singleAvailable = 5;
-        int doubleAvailable = 3;
-        int suiteAvailable = 2;
+        System.out.println("Add-On Service Selection");
 
-        Room single = new SingleRoom();
-        Room doub = new DoubleRoom();
-        Room suite = new SuiteRoom();
+        // Assume reservation already confirmed in Use Case 6
+        String reservationId = "Single-1";
 
-        System.out.println("Hotel Room Initialization\n");
+        AddOnServiceManager manager = new AddOnServiceManager();
 
-        System.out.println("Single Room:");
-        single.displayRoomDetails();
-        System.out.println("Available: " + singleAvailable + "\n");
+        // Add services (example combination to match output)
+        manager.addService(reservationId, new AddOnService("Breakfast", 500.0));
+        manager.addService(reservationId, new AddOnService("Spa", 1000.0));
 
-        System.out.println("Double Room:");
-        doub.displayRoomDetails();
-        System.out.println("Available: " + doubleAvailable + "\n");
-
-        System.out.println("Suite Room:");
-        suite.displayRoomDetails();
-        System.out.println("Available: " + suiteAvailable);
+        // Output
+        System.out.println("Reservation ID: " + reservationId);
+        System.out.println("Total Add-On Cost: "
+                + manager.getTotalCost(reservationId));
     }
 }
