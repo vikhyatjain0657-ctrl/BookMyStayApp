@@ -1,41 +1,48 @@
+import java.util.Scanner;
+
 /**
- * MAIN CLASS - UseCase2RoomInitialization
+ * MAIN CLASS - UseCase9ErrorHandlingValidation
  *
- * Use Case 2: Basic Room Types & Static Availability
+ * Demonstrates validation + exception handling.
  *
- * Description:
- * This class demonstrates room initialization
- * using simple domain variables before introducing
- * centralized inventory management.
- *
- * Availability is represented using
- * basic variables to highlight limitations.
- *
- * @version 2.1
+ * @version 9.0
  */
 public class BookMyStayApp {
 
-    /**
-     * Application entry point.
-     *
-     * @param args Command-Line arguments
-     */
     public static void main(String[] args) {
 
-        System.out.println("Add-On Service Selection");
+        System.out.println("Booking Validation");
 
-        // Assume reservation already confirmed in Use Case 6
-        String reservationId = "Single-1";
+        Scanner scanner = new Scanner(System.in);
 
-        AddOnServiceManager manager = new AddOnServiceManager();
+        try {
+            // Input
+            System.out.print("Enter guest name: ");
+            String guestName = scanner.nextLine();
 
-        // Add services (example combination to match output)
-        manager.addService(reservationId, new AddOnService("Breakfast", 500.0));
-        manager.addService(reservationId, new AddOnService("Spa", 1000.0));
+            System.out.print("Enter room type (Single/Double/Suite): ");
+            String roomType = scanner.nextLine();
 
-        // Output
-        System.out.println("Reservation ID: " + reservationId);
-        System.out.println("Total Add-On Cost: "
-                + manager.getTotalCost(reservationId));
+            // Core components
+            RoomInventory inventory = new RoomInventory();
+            ReservationValidator validator = new ReservationValidator();
+            BookingRequestQueue queue = new BookingRequestQueue();
+
+            // Validation
+            validator.validate(guestName, roomType, inventory);
+
+            // If valid → add to queue
+            queue.addRequest(new Reservation(guestName, roomType));
+
+            System.out.println("Booking request added successfully.");
+
+        } catch (InvalidBookingException e) {
+
+            // Domain-specific error handling
+            System.out.println("Booking failed: " + e.getMessage());
+
+        } finally {
+            scanner.close();
+        }
     }
 }
