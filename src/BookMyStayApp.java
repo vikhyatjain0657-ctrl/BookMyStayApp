@@ -1,41 +1,85 @@
-/**
- * MAIN CLASS - UseCase2RoomInitialization
- *
- * Use Case 2: Basic Room Types & Static Availability
- *
- * Description:
- * This class demonstrates room initialization
- * using simple domain variables before introducing
- * centralized inventory management.
- *
- * Availability is represented using
- * basic variables to highlight limitations.
- *
- * @version 2.1
- */
+import java.util.*;
+
+class RoomInventory {
+
+    private Map<String, Integer> roomAvailability;
+
+    public RoomInventory() {
+        roomAvailability = new HashMap<>();
+        roomAvailability.put("Single", 5);
+        roomAvailability.put("Double", 3);
+        roomAvailability.put("Suite", 2);
+    }
+
+    public int getAvailableRooms(String roomType) {
+        return roomAvailability.getOrDefault(roomType, 0);
+    }
+
+    public void incrementRoom(String roomType) {
+        roomAvailability.put(roomType, getAvailableRooms(roomType) + 1);
+    }
+}
+
+class CancellationService {
+
+    private Stack<String> releasedRoomIds;
+    private Map<String, String> reservationRoomTypeMap;
+
+    public CancellationService() {
+        releasedRoomIds = new Stack<>();
+        reservationRoomTypeMap = new HashMap<>();
+    }
+
+    public void registerBooking(String reservationId, String roomType) {
+        reservationRoomTypeMap.put(reservationId, roomType);
+    }
+
+    public void cancelBooking(String reservationId, RoomInventory inventory) {
+
+        if (!reservationRoomTypeMap.containsKey(reservationId)) {
+            System.out.println("Invalid cancellation. Reservation not found.");
+            return;
+        }
+
+        String roomType = reservationRoomTypeMap.get(reservationId);
+
+        releasedRoomIds.push(reservationId);
+
+        inventory.incrementRoom(roomType);
+
+        reservationRoomTypeMap.remove(reservationId);
+
+        System.out.println("Booking cancelled successfully. Inventory restored for room type: " + roomType);
+    }
+
+    public void showRollbackHistory() {
+        System.out.println("\nRollback History (Most Recent First):");
+
+        Stack<String> tempStack = (Stack<String>) releasedRoomIds.clone();
+
+        while (!tempStack.isEmpty()) {
+            System.out.println("Released Reservation ID: " + tempStack.pop());
+        }
+    }
+}
+
 public class BookMyStayApp {
 
-    /**
-     * Application entry point.
-     *
-     * @param args Command-Line arguments
-     */
     public static void main(String[] args) {
 
-        System.out.println("Add-On Service Selection");
+        System.out.println("Booking Cancellation");
 
-        // Assume reservation already confirmed in Use Case 6
+        RoomInventory inventory = new RoomInventory();
+        CancellationService cancellationService = new CancellationService();
+
         String reservationId = "Single-1";
+        cancellationService.registerBooking(reservationId, "Single");
 
-        AddOnServiceManager manager = new AddOnServiceManager();
+        cancellationService.cancelBooking(reservationId, inventory);
 
-        // Add services (example combination to match output)
-        manager.addService(reservationId, new AddOnService("Breakfast", 500.0));
-        manager.addService(reservationId, new AddOnService("Spa", 1000.0));
+        cancellationService.showRollbackHistory();
 
-        // Output
-        System.out.println("Reservation ID: " + reservationId);
-        System.out.println("Total Add-On Cost: "
-                + manager.getTotalCost(reservationId));
+        System.out.println("\nUpdated Single Room Availability: "
+                + inventory.getAvailableRooms("Single"));
     }
 }
