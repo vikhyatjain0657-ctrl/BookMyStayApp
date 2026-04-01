@@ -1,41 +1,79 @@
-/**
- * MAIN CLASS - UseCase2RoomInitialization
- *
- * Use Case 2: Basic Room Types & Static Availability
- *
- * Description:
- * This class demonstrates room initialization
- * using simple domain variables before introducing
- * centralized inventory management.
- *
- * Availability is represented using
- * basic variables to highlight limitations.
- *
- * @version 2.1
- */
+import java.io.*;
+import java.util.*;
+
+class RoomInventory {
+    private Map<String, Integer> availability;
+
+    public RoomInventory() {
+        availability = new HashMap<>();
+        availability.put("Single", 5);
+        availability.put("Double", 3);
+        availability.put("Suite", 2);
+    }
+
+    public Map<String, Integer> getAvailability() {
+        return availability;
+    }
+}
+
+class FilePersistenceService {
+
+    public void saveInventory(RoomInventory inventory, String filePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            for (Map.Entry<String, Integer> entry : inventory.getAvailability().entrySet()) {
+                writer.write(entry.getKey() + "=" + entry.getValue());
+                writer.newLine();
+            }
+            System.out.println("Inventory saved successfully.");
+        } catch (IOException e) {
+            System.out.println("Error saving inventory.");
+        }
+    }
+
+    public void loadInventory(RoomInventory inventory, String filePath) {
+        File file = new File(filePath);
+
+        if (!file.exists()) {
+            System.out.println("No valid inventory data found. Starting fresh.");
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            Map<String, Integer> map = inventory.getAvailability();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("=");
+                if (parts.length == 2) {
+                    map.put(parts[0], Integer.parseInt(parts[1]));
+                }
+            }
+
+            System.out.println("Inventory loaded successfully.");
+        } catch (Exception e) {
+            System.out.println("Error loading inventory. Starting fresh.");
+        }
+    }
+}
+
 public class BookMyStayApp {
 
-    /**
-     * Application entry point.
-     *
-     * @param args Command-Line arguments
-     */
     public static void main(String[] args) {
 
-        System.out.println("Add-On Service Selection");
+        System.out.println("System Recovery");
 
-        // Assume reservation already confirmed in Use Case 6
-        String reservationId = "Single-1";
+        String filePath = "inventory.txt";
 
-        AddOnServiceManager manager = new AddOnServiceManager();
+        RoomInventory inventory = new RoomInventory();
+        FilePersistenceService persistenceService = new FilePersistenceService();
 
-        // Add services (example combination to match output)
-        manager.addService(reservationId, new AddOnService("Breakfast", 500.0));
-        manager.addService(reservationId, new AddOnService("Spa", 1000.0));
+        persistenceService.loadInventory(inventory, filePath);
 
-        // Output
-        System.out.println("Reservation ID: " + reservationId);
-        System.out.println("Total Add-On Cost: "
-                + manager.getTotalCost(reservationId));
+        System.out.println("\nCurrent Inventory:");
+        for (Map.Entry<String, Integer> entry : inventory.getAvailability().entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+
+        persistenceService.saveInventory(inventory, filePath);
     }
 }
